@@ -28,12 +28,13 @@ export const getEstudiante = async (req, res) => {
 
 export const crearEstudiante = async (req, res) => {
     try {
-        const {nombre, edad} = req.body;
-        const [rows] = await pool.query('INSERT INTO estudiantes (nombre, edad) VALUES (?, ?)', [nombre, edad]);
+        const {nombre, edad, id_carrera} = req.body;
+        const [rows] = await pool.query('INSERT INTO estudiantes (nombre, edad, id_carrera) VALUES (?, ?, ?)', [nombre, edad, id_carrera]);
         res.send({
             id: rows.insertId,
             nombre,
-            edad
+            edad,
+            id_carrera
         });
     } catch (error) {
         return res.status(500).json({
@@ -60,9 +61,9 @@ export const eliminarEstudiante = async (req, res) => {
 export const actualizarEstudiante = async (req, res) => {
     try {
         const {id} = req.params;
-        const {nombre, edad} = req.body;
+        const {nombre, edad, id_carrera} = req.body;
 
-        const [result] = await pool.query('UPDATE estudiantes SET nombre = IFNULL(?, nombre) , edad = IFNULL(?, edad) WHERE id = ?', [nombre, edad, id]);
+        const [result] = await pool.query('UPDATE estudiantes SET nombre = IFNULL(?, nombre) , edad = IFNULL(?, edad), id_carrera = IFNULL(?, id_carrera) WHERE id = ?', [nombre, edad, id_carrera, id]);
 
         if (result.affectedRows === 0) return res.status(404).json({
             message: 'Estudiante no encontrado'
